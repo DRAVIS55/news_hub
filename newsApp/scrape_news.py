@@ -4,14 +4,14 @@ import base64
 from bs4 import BeautifulSoup
 from django.core.files.base import ContentFile
 from .models import News
-"--------------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----"
+
 # -------------------- AI Image Generation --------------------
 def AI_image_generation(news_obj):
     """
     Generates an AI image for a news article using Hugging Face API
     and saves it to the News object if it doesn't already have a file.
     """
-    
+    HUGGINGFACE_API_KEY ="add yours here for test later add to env"
     HF_API_URL = "https://api-inference.huggingface.co/models/gsdf/Counterfeit-V2.5"
     headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
 
