@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ highlighted_news.heading }}</title>
+    <link rel="stylesheet" href="{% static 'css/news_details.css' %}">
+</head>
+
+<body>
+    <div class="news-detail-container">
+
+        <!-- Highlighted News -->
+        <section class="highlighted-news">
+            <h1>{{ highlighted_news.heading }}</h1>
+            <p>{{ highlighted_news.description }}</p>
+            <p><strong>By {{ highlighted_news.author }}</strong></p>
+
+            {% if highlighted_news.file %}
+                {% if highlighted_news.file_type == 'image' %}
+                    <img src="{{ highlighted_news.file.url }}" alt="{{ highlighted_news.heading }}">
+                {% elif highlighted_news.file_type == 'video' %}
+                    <video controls autoplay>
+                        <source src="{{ highlighted_news.file.url }}" type="video/{{ highlighted_news.video_ext }}">
+                        Your browser does not support the video tag.
+                    </video>
+                {% endif %}
+            {% endif %}
+        </section>
+
+        <!-- Other News -->
+        <section class="other-news">
+            <h2>Other News</h2>
+            <div class="other-news-container">
+                {% for news_item in other_news %}
+                    <div class="news-card">
+                        <h3>{{ news_item.heading }}</h3>
+                        <p>{{ news_item.description|truncatechars:100 }}</p>
+                        <a href="{% url 'news_detail' news_item.pk %}">Read More</a>
+                    </div>
+                {% empty %}
+                    <p>No other news available.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <a class="back-link" href="{% url 'home' %}">&larr; Back to News Hub</a>
+
+    </div>
+</body>
+
+</html>

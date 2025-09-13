@@ -1,0 +1,116 @@
+/* Container */
+.news-detail-container {
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #1c2d4a;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #ffffff;
+}
+
+/* Highlighted News */
+.highlighted-news h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    line-height: 1.3;
+}
+
+.highlighted-news p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.highlighted-news img,
+.highlighted-news video {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+/* Other News Section */
+.other-news-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.other-news-container .news-card {
+    background-color: #273a69;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #ffffff;
+}
+
+.other-news-container .news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.other-news-container .news-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.other-news-container .news-card p {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    color: #d1d9ff;
+}
+
+.other-news-container .news-card a {
+    font-size: 0.9rem;
+    color: #00aaff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.other-news-container .news-card a:hover {
+    color: #0077cc;
+}
+
+/* Back Link */
+.back-link {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.back-link:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .highlighted-news h1 {
+        font-size: 1.6rem;
+    }
+
+    .highlighted-news p {
+        font-size: 0.95rem;
+    }
+
+    .other-news-container {
+        grid-template-columns: 1fr;
+    }
+}
+/* End of file */

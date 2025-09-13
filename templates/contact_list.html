@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Info</title>
+    <link rel="stylesheet" href="{% static 'css/contact.css' %}">
+</head>
+<body>
+    <div class="contact-container">
+        <h1 class="contact-heading">Contact Submissions</h1>
+        <div class="contact-cards">
+            {% for contact in contacts %}
+            <div class="contact-card">
+                <h2>{{ contact.name }}</h2>
+                <p><strong>Email:</strong> {{ contact.email }}</p>
+                {% if contact.phone %}
+                <p><strong>Phone:</strong> {{ contact.phone }}</p>
+                {% endif %}
+                <p><strong>Subject:</strong> {{ contact.subject }}</p>
+                <p>{{ contact.message }}</p>
+                <span class="contact-date">{{ contact.created_at|date:"d M Y H:i" }}</span>
+            </div>
+            {% empty %}
+            <p>No contact messages yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

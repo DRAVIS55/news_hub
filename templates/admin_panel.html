@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+</head>
+
+<body>
+    <h2>Admin Panel</h2>
+    <!--Form Panel-->
+    <section>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input placeholder="author" type="text" name="author" required><br>
+            <input placeholder="Heading" type="text" name="title" required><br>
+            <input placeholder="Description" type="text" name="description" required><br>
+            <input type="file" name="file"><br>
+            <button type="submit">Submit</button>
+        </form>
+
+    </section>
+    <section>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Author</th>
+                    <th>manage news</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for new in news %}
+                <tr>
+                    <td>{{ new.heading }}</td>
+                    <td>{{ new.description }}</td>
+                    <td>{{ new.author }}</td>
+                    <td>
+                        <form>
+                            {% csrf_token %}
+                            <button>Edit</button>
+                            <button>Delete</button>
+                        </form>
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </section>
+</body>
+
+</html>

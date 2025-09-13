@@ -1,0 +1,342 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>News Hub</title>
+    <link rel="stylesheet" href="{% static 'css/news_hub.css' %}" />
+</head>
+
+<body>
+    <div class="news-hub-container">
+        <p>AI News Hub</p>
+
+        <!-- Navigation -->
+        <section>
+            <div>
+                <p style="font-weight:bold; font-size:18px;">Your News Feed: World & Local</p>
+                <form method="get" id="category-form">
+                    <select name="category" id="news-category" style="
+                        padding: 10px;
+                        font-size: 16px;
+                        border-radius: 6px;
+                        border: 1px solid #ccc;
+                        cursor: pointer;
+                        width: 220px;
+                    " onchange="document.getElementById('category-form').submit();">
+                        <option value="" {% if not selected_category %}selected{% endif %}>-- All News --</option>
+                        <option value="world" {% if selected_category == 'world' %}selected{% endif %}>World News</option>
+                        <option value="local" {% if selected_category == 'local' %}selected{% endif %}>Local News</option>
+                    </select>
+                </form>
+            </div>
+
+            <a>Chat With AI</a>
+
+            <!-- Custom Category Dropdown -->
+            <div class="category-select-wrapper" id="category-wrapper">
+                <p id="category-label">News Category</p>
+                <div class="custom-dropdown" id="category-dropdown">
+                    <div class="dropdown-selected">-- Select News Category --</div>
+                    <ul class="dropdown-options" tabindex="0">
+                        <li>Politics</li>
+                        <li>Technology</li>
+                        <li>Science</li>
+                        <li>Health</li>
+                        <li>Business</li>
+                        <li>Economy</li>
+                        <li>Education</li>
+                        <li>Sports</li>
+                        <li>Entertainment</li>
+                        <li>Music</li>
+                        <li>Movies</li>
+                        <li>Art & Culture</li>
+                        <li>Religious</li>
+                        <li>Travel</li>
+                        <li>Weather</li>
+                        <li>World</li>
+                        <li>Environment</li>
+                        <li>Crime</li>
+                        <li>Military</li>
+                        <li>Legal</li>
+                        <li>Local</li>
+                        <li>Opinion</li>
+                    </ul>
+                </div>
+            </div>
+
+            <a href="{% url 'submit_contact' %}" class="contact-link">Contact Us</a>
+            <a>Add News</a>
+        </section>
+
+        <!-- Search Bar -->
+        <section>
+            <form method="GET">
+                <input type="text" name="q" placeholder="Search news..." />
+                <button type="submit">Search</button>
+            </form>
+        </section>
+
+        <!-- News List as Cards -->
+        <section class="news-cards-container">
+            {% for new in news %}
+            <div class="news-card">
+                {% if new.file %}
+                <div class="news-image">
+                    {% if new.file_type == 'video' %}
+                    <video autoplay muted loop playsinline class="clickable-media" data-type="video"
+                        data-src="{{ new.file.url }}" data-ext="{{ new.video_ext }}">
+                        <source src="{{ new.file.url }}" type="video/{{ new.video_ext }}">
+                        Your browser does not support the video tag.
+                    </video>
+                    {% elif new.file_type == 'image' %}
+                    <img src="{{ new.file.url }}" alt="{{ new.heading }}" class="clickable-media" data-type="image"
+                        data-src="{{ new.file.url }}">
+                    {% endif %}
+                </div>
+                {% endif %}
+                <div class="news-content">
+                    <h3 class="news-title">{{ new.heading }}</h3>
+                    <p class="news-description">{{ new.description|truncatechars:150 }}</p>
+                    <div class="news-footer">
+                        <a href="{% url 'news_detail' new.pk %}" class="see-more-btn">See More</a>
+                        <p class="news-author">By {{ new.author }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="no-news-message">No news articles found.</p>
+            {% endfor %}
+        </section>
+
+        <!-- Bottom AI Chat Section -->
+        <div id="ai-chat" style="
+            position: fixed;
+            bottom: 0;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            border: 1px solid #ccc;
+            border-radius: 10px 10px 0 0;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+        ">
+            <div id="chat-header" style="padding: 10px; background:#007bff; color:white; border-radius: 10px 10px 0 0;">
+                News AI Assistant
+            </div>
+            <div id="chat-messages" style="flex:1; padding:10px; overflow-y:auto;"></div>
+            <div style="display:flex; border-top:1px solid #ccc;">
+                <input id="chat-input" type="text" placeholder="Ask about news..." style="flex:1; padding:10px; border:none; outline:none;">
+                <button id="chat-send" style="padding:10px; background:#007bff; color:white; border:none; cursor:pointer;">Send</button>
+            </div>
+        </div>
+        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+        <!-- Full News Modal -->
+        <div id="fullNewsModal" class="media-modal" style="display: none;">
+            <div class="media-modal-content">
+                <span id="modalCloseFull" class="modal-close">&times;</span>
+                <div id="fullNewsContainer">
+                    <h3 id="fullNewsTitle"></h3>
+                    <p id="fullNewsDescription"></p>
+                    <p id="fullNewsAuthor" style="margin-top: 20px; font-weight: bold;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal / Pane -->
+        <div id="mediaModal" class="media-modal" style="display:none;">
+            <div class="media-modal-content">
+                <span id="modalClose" class="modal-close">&times;</span>
+                <div id="modalMediaContainer"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <section>
+            <p>&copy; Drav-Viv 2025</p>
+        </section>
+
+    </div>
+
+    <!-- JS Section -->
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // --- Dropdown Logic ---
+    const wrapper = document.getElementById('category-wrapper');
+    const dropdown = document.getElementById('category-dropdown');
+    const selected = dropdown?.querySelector('.dropdown-selected');
+    const options = dropdown?.querySelectorAll('.dropdown-options li');
+    const label = document.getElementById('category-label');
+
+    let hoverTimeout = null;
+
+    if (label) {
+        label.addEventListener('click', () => {
+            wrapper.classList.toggle('open');
+        });
+    }
+
+    if (selected) {
+        selected.addEventListener('click', () => {
+            wrapper.classList.toggle('open');
+        });
+    }
+
+    if (wrapper) {
+        wrapper.addEventListener('mouseenter', () => {
+            clearTimeout(hoverTimeout);
+            wrapper.classList.add('open');
+        });
+
+        wrapper.addEventListener('mouseleave', () => {
+            hoverTimeout = setTimeout(() => {
+                wrapper.classList.remove('open');
+            }, 200);
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (wrapper && !wrapper.contains(e.target)) {
+            wrapper.classList.remove('open');
+        }
+    });
+
+    if (options) {
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                selected.textContent = option.textContent;
+                wrapper.classList.remove('open');
+                const select = document.getElementById('news-category');
+                if (select) {
+                    select.value = option.getAttribute('data-value') || option.textContent.toLowerCase();
+                    select.dispatchEvent(new Event('change'));
+                }
+            });
+        });
+    }
+
+    // --- AI Chat Logic ---
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatMessages = document.getElementById('chat-messages');
+    const select = document.getElementById('news-category');
+
+    function appendMessage(user, text, time=null) {
+        const div = document.createElement('div');
+        div.style.marginBottom = '8px';
+        div.innerHTML = `<b>${user}:</b> ${text} ${time ? `<small style="color:gray;">(${time})</small>` : ""}`;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    async function sendMessage() {
+        const message = chatInput.value.trim();
+        if (!message) return;
+        appendMessage('You', message);
+        chatInput.value = '';
+
+        const category = select ? select.value : null;
+
+        try {
+            const res = await fetch("/chat_ai/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]')?.value || ""
+                },
+                body: JSON.stringify({ message: message, category: category })
+            });
+
+            const data = await res.json();
+
+            if (data.reply) {
+                appendMessage('AI', data.reply);
+            } else if (data.error) {
+                appendMessage('AI', `⚠️ Error: ${data.error}`);
+            } else {
+                appendMessage('AI', 'No response from AI.');
+            }
+
+        } catch (err) {
+            console.error("Error fetching AI response:", err);
+            appendMessage('AI', '⚠️ Sorry, something went wrong.');
+        }
+    }
+
+    chatSend.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+
+    select?.addEventListener('change', () => {
+        console.log("Selected category:", select.value);
+    });
+
+    // --- Load Previous Chat History ---
+    async function loadChatHistory() {
+        try {
+            const res = await fetch("/get_chat_history/");
+            const data = await res.json();
+
+            if (data.chats && data.chats.length > 0) {
+                data.chats.forEach(chat => {
+                    appendMessage("You", chat.user, chat.time);
+                    appendMessage("AI", chat.ai, chat.time);
+                });
+            }
+        } catch (err) {
+            console.error("Error loading chat history:", err);
+        }
+    }
+
+    loadChatHistory(); // ✅ run on page load
+
+    // --- Media Click Logic ---
+    const mediaModal = document.getElementById('mediaModal');
+    const mediaContainer = document.getElementById('modalMediaContainer');
+    const mediaClose = document.getElementById('modalClose');
+
+    document.querySelectorAll('.clickable-media').forEach(media => {
+        media.style.cursor = 'pointer';
+        media.addEventListener('click', () => {
+            const type = media.getAttribute('data-type');
+            const src = media.getAttribute('data-src');
+
+            mediaContainer.innerHTML = '';
+
+            if (type === 'image') {
+                const img = document.createElement('img');
+                img.src = src;
+                img.style.maxWidth = '100%';
+                mediaContainer.appendChild(img);
+            } else if (type === 'video') {
+                const video = document.createElement('video');
+                video.src = src;
+                video.controls = true;
+                video.autoplay = true;
+                video.style.maxWidth = '100%';
+                mediaContainer.appendChild(video);
+            }
+
+            mediaModal.style.display = 'flex';
+        });
+    });
+
+    mediaClose?.addEventListener('click', () => {
+        mediaModal.style.display = 'none';
+        mediaContainer.innerHTML = '';
+    });
+
+    mediaModal?.addEventListener('click', (e) => {
+        if (e.target === mediaModal) {
+            mediaModal.style.display = 'none';
+            mediaContainer.innerHTML = '';
+        }
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat History</title>
+</head>
+<body>
+    {% for chat in chats %}
+        <p>{{ chat.user_message }}</p>
+        <p>{{ chat.ai_response }}</p>
+    {% empty %}
+        <p>No chats available</p>
+    {% endfor %}
+</body>
+</html>
