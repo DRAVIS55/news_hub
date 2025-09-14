@@ -13,63 +13,127 @@
     <div class="news-hub-container">
         <p>AI News Hub</p>
 
-        <!-- Navigation -->
-        <section>
-            <div>
-                <p style="font-weight:bold; font-size:18px;">Your News Feed: World & Local</p>
-                <form method="get" id="category-form">
-                    <select name="category" id="news-category" style="
-                        padding: 10px;
-                        font-size: 16px;
-                        border-radius: 6px;
-                        border: 1px solid #ccc;
-                        cursor: pointer;
-                        width: 220px;
-                    " onchange="document.getElementById('category-form').submit();">
-                        <option value="" {% if not selected_category %}selected{% endif %}>-- All News --</option>
-                        <option value="world" {% if selected_category == 'world' %}selected{% endif %}>World News</option>
-                        <option value="local" {% if selected_category == 'local' %}selected{% endif %}>Local News</option>
-                    </select>
-                </form>
-            </div>
+       <section style="
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    color: #222;
+    font-family: Arial, sans-serif;
+">
+    <!-- Left: Title + Form -->
+    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <p style="font-weight:bold; font-size:18px; margin:0; color:#000;">Your News Feed: World & Local</p>
+        <form method="get" id="category-form">
+            <select name="category" id="news-category" style="
+                padding: 10px;
+                font-size: 16px;
+                border-radius: 6px;
+                border: 1px solid #666;
+                background: #fff;
+                color: #222;
+                cursor: pointer;
+                width: 220px;
+            " onchange="document.getElementById('category-form').submit();">
+                <option value="">-- All News --</option>
+                <option value="world">World News</option>
+                <option value="local">Local News</option>
+            </select>
+        </form>
+    </div>
 
-            <a>Chat With AI</a>
+    <!-- Middle: Custom Dropdown -->
+    <div class="category-select-wrapper" id="category-wrapper">
+        <p id="category-label" style="margin:0; font-weight:bold; color:#333;">News Category</p>
+        <div class="custom-dropdown" id="category-dropdown" style="
+            background:#fff; 
+            border:1px solid #ccc;
+            border-radius:6px;
+            padding:6px 10px;
+            color:#222;
+        ">
+            <div class="dropdown-selected">-- Select News Category --</div>
+            <ul class="dropdown-options" tabindex="0" style="
+                background:#fff;
+                border:1px solid #ccc;
+                border-radius:6px;
+                padding:8px;
+                max-height:200px;
+                overflow-y:auto;
+            ">
+                <li>Politics</li>
+                <li>Technology</li>
+                <li>Science</li>
+                <li>Health</li>
+                <li>Business</li>
+                <li>Economy</li>
+                <li>Education</li>
+                <li>Sports</li>
+                <li>Entertainment</li>
+                <li>Music</li>
+                <li>Movies</li>
+                <li>Art & Culture</li>
+                <li>Religious</li>
+                <li>Travel</li>
+                <li>Weather</li>
+                <li>World</li>
+                <li>Environment</li>
+                <li>Crime</li>
+                <li>Military</li>
+                <li>Legal</li>
+                <li>Local</li>
+                <li>Opinion</li>
+            </ul>
+        </div>
+    </div>
 
-            <!-- Custom Category Dropdown -->
-            <div class="category-select-wrapper" id="category-wrapper">
-                <p id="category-label">News Category</p>
-                <div class="custom-dropdown" id="category-dropdown">
-                    <div class="dropdown-selected">-- Select News Category --</div>
-                    <ul class="dropdown-options" tabindex="0">
-                        <li>Politics</li>
-                        <li>Technology</li>
-                        <li>Science</li>
-                        <li>Health</li>
-                        <li>Business</li>
-                        <li>Economy</li>
-                        <li>Education</li>
-                        <li>Sports</li>
-                        <li>Entertainment</li>
-                        <li>Music</li>
-                        <li>Movies</li>
-                        <li>Art & Culture</li>
-                        <li>Religious</li>
-                        <li>Travel</li>
-                        <li>Weather</li>
-                        <li>World</li>
-                        <li>Environment</li>
-                        <li>Crime</li>
-                        <li>Military</li>
-                        <li>Legal</li>
-                        <li>Local</li>
-                        <li>Opinion</li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Right: Links -->
+    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <a href="#" style="
+            padding:8px 14px;
+            background:#007bff;
+            color:#fff;
+            border-radius:6px;
+            font-weight:bold;
+            text-decoration:none;
+            transition:all 0.2s ease;
+        " onmouseover="this.style.background='#0056b3'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.2)';"
+          onmouseout="this.style.background='#007bff'; this.style.boxShadow='none';">
+          Chat With AI
+        </a>
 
-            <a href="{% url 'submit_contact' %}" class="contact-link">Contact Us</a>
-            <a>Add News</a>
-        </section>
+        <a href="{% url 'submit_contact' %}" class="contact-link" style="
+            padding:8px 14px;
+            background:#28a745;
+            color:#fff;
+            border-radius:6px;
+            font-weight:bold;
+            text-decoration:none;
+            transition:all 0.2s ease;
+        " onmouseover="this.style.background='#1e7e34'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.2)';"
+          onmouseout="this.style.background='#28a745'; this.style.boxShadow='none';">
+          Contact Us
+        </a>
+
+        <a href="#" style="
+            padding:8px 14px;
+            background:#dc3545;
+            color:#fff;
+            border-radius:6px;
+            font-weight:bold;
+            text-decoration:none;
+            transition:all 0.2s ease;
+        " onmouseover="this.style.background='#a71d2a'; this.style.boxShadow='0 2px 6px rgba(0,0,0,0.2)';"
+          onmouseout="this.style.background='#dc3545'; this.style.boxShadow='none';">
+          Add News
+        </a>
+    </div>
+</section>
+
 
         <!-- Search Bar -->
         <section>
@@ -111,30 +175,31 @@
             {% endfor %}
         </section>
 
-        <!-- Bottom AI Chat Section -->
-        <div id="ai-chat" style="
-            position: fixed;
-            bottom: 0;
-            right: 20px;
-            width: 300px;
-            max-height: 400px;
-            border: 1px solid #ccc;
-            border-radius: 10px 10px 0 0;
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-        ">
-            <div id="chat-header" style="padding: 10px; background:#007bff; color:white; border-radius: 10px 10px 0 0;">
-                News AI Assistant
-            </div>
-            <div id="chat-messages" style="flex:1; padding:10px; overflow-y:auto;"></div>
-            <div style="display:flex; border-top:1px solid #ccc;">
-                <input id="chat-input" type="text" placeholder="Ask about news..." style="flex:1; padding:10px; border:none; outline:none;">
-                <button id="chat-send" style="padding:10px; background:#007bff; color:white; border:none; cursor:pointer;">Send</button>
-            </div>
-        </div>
-        <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      <!-- Bottom AI Chat Section -->
+<div id="ai-chat" style="
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 300px;
+    max-height: 400px;
+    border: 1px solid #ccc;
+    border-radius: 10px 10px 0 0;
+    background: white;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+">
+    <div id="chat-header" style="padding: 10px; background:#007bff; color:white; border-radius: 10px 10px 0 0;">
+        News AI Assistant
+    </div>
+    <div id="chat-messages" style="flex:1; padding:10px; overflow-y:auto;"></div>
+    <div style="display:flex; border-top:1px solid #ccc;">
+        <input id="chat-input" type="text" placeholder="Ask about news..." style="flex:1; padding:10px; border:none; outline:none;">
+        <button id="chat-send" style="padding:10px; background:#007bff; color:white; border:none; cursor:pointer;">Send</button>
+    </div>
+</div>
+
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 
         <!-- Full News Modal -->
         <div id="fullNewsModal" class="media-modal" style="display: none;">
@@ -235,38 +300,43 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function sendMessage() {
-        const message = chatInput.value.trim();
-        if (!message) return;
-        appendMessage('You', message);
-        chatInput.value = '';
+    const message = chatInput.value.trim();
+    if (!message) return;
+    appendMessage('You', message);
+    chatInput.value = '';
 
-        const category = select ? select.value : null;
+    const category = select ? select.value : null;
 
-        try {
-            const res = await fetch("/chat_ai/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]')?.value || ""
-                },
-                body: JSON.stringify({ message: message, category: category })
-            });
+    try {
+        const res = await fetch("/chat_ai/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]')?.value || ""
+            },
+            body: JSON.stringify({ message: message, category: category })
+        });
 
-            const data = await res.json();
+        const data = await res.json();
 
-            if (data.reply) {
-                appendMessage('AI', data.reply);
-            } else if (data.error) {
-                appendMessage('AI', `⚠️ Error: ${data.error}`);
-            } else {
-                appendMessage('AI', 'No response from AI.');
-            }
-
-        } catch (err) {
-            console.error("Error fetching AI response:", err);
-            appendMessage('AI', '⚠️ Sorry, something went wrong.');
+        if (data.reply) {
+            appendMessage('AI', data.reply);
+        } else if (data.error) {
+            appendMessage('AI', `⚠️ Error: ${data.error}`);
+        } else {
+            appendMessage('AI', 'No response from AI.');
         }
+
+        // ✅ Give DB a very short time, then reload fresh history
+        setTimeout(() => {
+            loadChatHistory();   // reuse your existing function
+        }, 300);  // 0.3 seconds is enough
+
+    } catch (err) {
+        console.error("Error fetching AI response:", err);
+        appendMessage('AI', '⚠️ Sorry, something went wrong.');
     }
+}
 
     chatSend.addEventListener('click', sendMessage);
     chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
@@ -275,24 +345,64 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Selected category:", select.value);
     });
 
-    // --- Load Previous Chat History ---
-    async function loadChatHistory() {
-        try {
-            const res = await fetch("/get_chat_history/");
-            const data = await res.json();
+    // Helper: Render chat bubble
+function renderChatMessage(sender, text, time, source = null) {
+    const chatBox = document.getElementById("chat-messages");
+    const msgWrapper = document.createElement("div");
+    msgWrapper.style.display = "flex";
+    msgWrapper.style.marginBottom = "8px";
+    msgWrapper.style.justifyContent = sender === "You" ? "flex-end" : "flex-start";
 
-            if (data.chats && data.chats.length > 0) {
-                data.chats.forEach(chat => {
-                    appendMessage("You", chat.user, chat.time);
-                    appendMessage("AI", chat.ai, chat.time);
-                });
-            }
-        } catch (err) {
-            console.error("Error loading chat history:", err);
-        }
+    const bubble = document.createElement("div");
+    bubble.style.maxWidth = "70%";
+    bubble.style.padding = "8px 12px";
+    bubble.style.borderRadius = "15px";
+    bubble.style.wordWrap = "break-word";
+    bubble.style.fontSize = "14px";
+
+    // Style depending on sender
+    if (sender === "You") {
+        bubble.style.background = "#007bff";
+        bubble.style.color = "white";
+        bubble.style.borderBottomRightRadius = "3px";
+    } else {
+        bubble.style.background = "#e5e5ea";
+        bubble.style.color = "black";
+        bubble.style.borderBottomLeftRadius = "3px";
     }
 
-    loadChatHistory(); // ✅ run on page load
+    bubble.innerHTML = `
+        ${source ? `<div style="font-size:11px; font-weight:bold; margin-bottom:4px;">${source}</div>` : ""}
+        <div>${text}</div>
+        <div style="font-size:10px; margin-top:4px; text-align:right; opacity:0.7;">
+            ${time}
+        </div>
+    `;
+
+    msgWrapper.appendChild(bubble);
+    chatBox.appendChild(msgWrapper);
+    chatBox.scrollTop = chatBox.scrollHeight; // auto scroll
+}
+
+// --- Load Previous Chat History ---
+async function loadChatHistory() {
+    try {
+        const res = await fetch("/get_chat_history/");
+        const data = await res.json();
+
+        if (data && data.length > 0) {
+            data.forEach(chat => {
+                console.log("Loaded chat:", chat); // 👀 See what comes back
+                renderChatMessage("You", chat.user_message, chat.created_at, "User");
+                renderChatMessage("AI", chat.ai_response, chat.created_at, chat.source || "AI");
+            });
+        }
+    } catch (err) {
+        console.error("Error loading chat history:", err);
+    }
+}
+
+loadChatHistory(); // ✅ run on page load
 
     // --- Media Click Logic ---
     const mediaModal = document.getElementById('mediaModal');

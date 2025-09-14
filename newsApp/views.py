@@ -12,7 +12,9 @@ from django.http import JsonResponse
 from .models import News
 
 # ✅ Load API key from environment
-openai.api_key = os.getenv("OPENAI_API_KEY") 
+#openai.api_key = os.getenv("OPENAI_API_KEY") 
+from django.db.models import Q
+
 # -------------------------------
 # Home Page / News Listing
 # -------------------------------
@@ -22,12 +24,15 @@ def index(request):
 
     news = News.objects.all()
 
-    # Filtering
+    # Filtering by category
     if category:
         news = news.filter(news_type=category)
+
+    # Filtering by search query (without breaking chain)
     if search_query:
-        news = news.filter(description__icontains=search_query) | news.filter(
-            heading__icontains=search_query
+        news = news.filter(
+            Q(description__icontains=search_query) |
+            Q(heading__icontains=search_query)
         )
 
     # Detect file types for frontend rendering
@@ -102,18 +107,29 @@ def chat_ai(request):
 
             # Fuzzy match top 10 results for the user query
             matches = process.extract(user_message, choices, limit=10, score_cutoff=60)
-
-            # Map back to News objects
+            # Build the matched news list dynamically from all_news and matches
             matched_news = [all_news[i] for _, _, i in matches]
 
-            # Build the final string for AI input
-            news_text = "\n".join([f"{n.heading}: {n.description}" for n in matched_news])
-            prompt = f"""
-You are a news assistant AI. Use the following news to answer user questions:
-{news_text}
-User Question: {user_message}
-Provide a concise, clear answer. Summarize if necessary.
-"""
+            # Instead of hardcoded example usage, construct news_articles from matched_news
+            news_articles = [f"{n.heading}: {n.description}" for n in matched_news]
+
+            # ✅ Save chat history cleanly without mixing heading + description
+            for n in matched_news:
+                ChatHistory.objects.create(
+                    user_message=user_message,           # the query from user
+                    ai_response=n.description,           # only the description (not mixed with heading)
+                    category=category_filter,
+                    source=f"===Summarizer======:Heading: {n.heading}"
+                )
+
+
+            
+            '''prompt = f"""
+                You are a news assistant AI. Use the following news to answer user questions:
+                {news_text}
+                User Question: {user_message}
+                Provide a concise, clear answer. Summarize if necessary.
+            """
             # ✅ Use correct model
             response = client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -125,16 +141,45 @@ Provide a concise, clear answer. Summarize if necessary.
             )
 
             # ✅ Extract the AI’s reply
-            answer = response.choices[0].message.content.strip()
-            print(f'==================================================\n{answer}')
-            print('working==============================')
-            print(user_message)
+            answer = response.choices[0].message.content.strip()'''
+            from transformers import pipeline
 
+            # 1️⃣ Preload the summarization model once (at module load)
+            summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6")
+
+            def get_summary(text, max_len=150, min_len=50):
+                """
+                    Summarizes a single news article.
+                """
+                summary = summarizer(
+                text,
+                max_length=max_len,
+                min_length=min_len,
+                do_sample=False
+                )
+                return summary[0]['summary_text']
+
+            def summarize_news_list(news_list):
+                """
+                    Summarizes a list of news articles efficiently.
+                    Returns a list of summaries in the same order.
+                """
+                summaries = []
+                for news in news_list:
+                    summaries.append(get_summary(news))
+                return summaries           
+
+            all_summaries = summarize_news_list(news_articles)
+            answer = "\n\n".join(
+                [f"Article {i+1} Summary:\n{summary}" for i, summary in enumerate(all_summaries)]
+                )
+            print(answer)
             # ✅ Save conversation to DB
             ChatHistory.objects.create(
                 user_message=user_message,
                 ai_response=answer,
-                category=category_filter
+                category=category_filter,
+                source="AI"
             )
 
             # ✅ Delete expired chats (older than 30 mins)
@@ -265,8 +310,30 @@ def submit_contact(request):
 
     return render(request, "contact_form.html")
 
+from django.http import JsonResponse
+from django.shortcuts import render
 from .models import ChatHistory
-def api_responses(request):
-    chats=ChatHistory.objects.all()
 
-    return render(request,'api_responses.html',{'chats':chats})
+# ✅ API endpoint: only JSON
+def get_chat_history(request):
+    chats = ChatHistory.objects.all().order_by("created_at")
+    data = [
+        {
+            "id": chat.id,
+            "user_message": chat.user_message,
+            "ai_response": chat.ai_response,
+            "source": chat.source,  # include source
+            "created_at": chat.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+        }
+        for chat in chats
+    ]
+    return JsonResponse(data, safe=False)
+
+
+
+# ✅ Web page endpoint: renders HTML template
+def api_responses(request):
+    chats = ChatHistory.objects.all().order_by("-created_at")
+    return render(request, "api_responses.html", {"chats": chats})
+
+

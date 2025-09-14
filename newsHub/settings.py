@@ -118,12 +118,12 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 
 import os
-from dotenv import load_dotenv
 
-# Load .env file
-load_dotenv()
-
-# Access variables
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
+
 if not OPENAI_API_KEY:
-    raise ValueError("OPENAI_API_KEY is not set in the environment variables.")
+    raise ValueError("OPENAI_API_KEY is not set in environment variables.")
+if not HUGGINGFACE_API_KEY:
+    raise ValueError("HUGGINGFACE_API_KEY is not set in environment variables.")
+

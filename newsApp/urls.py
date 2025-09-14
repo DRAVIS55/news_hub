@@ -7,7 +7,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', views.index,name='home'),
     path('index/', views.index, name='index'),
-    path('api_responses/', views.api_responses, name='api_responses'),
+    path("get_chat_history/", views.get_chat_history, name="get_chat_history"),  # JSON API
+    path("api_responses/", views.api_responses, name="api_responses"),          # HTML page
     path('chat_ai/', views.chat_ai, name='chat_ai'),  # must match fetch("/chat_ai/")
     path('news/<int:pk>/', views.news_detail, name='news_detail'),  # Detail page
     path('contacts/', views.contact_list, name='contact-list'),

@@ -1,37 +1,32 @@
-from django.test import TestCase
+def scrape_bbc():
+    url = "https://www.bbc.com/news"
+    all_headings = []
+    message_map = {}
+    try:
+        page = requests.get(url, timeout=15)
+        page.raise_for_status()
+    except Exception as e:
+        print(f"❌ Failed to fetch BBC: {e}")
+        return [], {}
 
-# Create your tests here.
-local_urls = [
-       #'https://www.capitalfm.co.ke/news/',
-        # 'https://www.kbc.co.ke/category/news/',
-         #'https://www.pd.co.ke/news/',
-          #  'https://www.businessdailyafrica.com/bd/corporate/companies',
-          #  'https://www.the-star.co.ke/',
-          #  'https://www.standardmedia.co.ke/',
-           # 'https://www.nation.co.ke/news',
-            #'https://www.theeastafrican.co.ke/tea/news',
-           # 'https://www.thecitizen.co.tz/tanzania/news',
-            #'https://www.ippmedia.com/en/news',
-           # 'https://www.ghanaweb.com/GhanaHomePage/NewsArchive',
-            #'https://www.vanguardngr.com/category/news/',
-            #'https://www.premiumtimesng.com/news',
-            #'https://www.thisdaylive.com/index.php/2024/06/19',
-            #'https://www.bbc.com/pidgin/tori',
-            #'https://www.aljazeera.com/africa/',
+    soup = BeautifulSoup(page.text, "html.parser")
+    news_passed = soup.find_all("body")  # BBC structure: headings inside h2, summaries inside p
 
-    ]
-world_urls = [
-        #tps://www.theguardian.com/world',
-        #'https://www.nytimes.com/section/world',
-        #'https://www.washingtonpost.com/world/',
-        #'https://www.france24.com/en/tag/world/',
-        #'https://www.dw.com/en/top-stories/s-9097',
-        #'https://www.apnews.com/hub/world-news',
-        #'https://www.euronews.com/news',
-        #'https://www.cbsnews.com/world/',
-        #'https://www.nbcnews.com/news/world',
-        #'https://www.foxnews.com/world',
-        #'https://www.usatoday.com/news/world/',
-        #'https://www.wsj.com/news/world',
-        #'https://www.bloomberg.com/world',
-    ]
+    for item in news_passed:
+        heading_tags = item.find_all("h2")
+        body_tags = item.find_all("p")  # returns a list
+        image_tag=item.find_all("img")
+        for image_tg in image_tag:
+            print(image_tag)
+        
+
+        for head in heading_tags:
+            heading_text = head.get_text(strip=True)
+
+            # Take the first paragraph as body, if exists
+            body_text = body_tags[0].get_text(strip=True) if body_tags else ""
+
+            all_headings.append(heading_text)
+            message_map[heading_text] = body_text
+
+    return all_headings, message_map
